@@ -6,63 +6,86 @@ v-card($material)
   background-color: $material.cards
   color: $material.text.primary
 
+  .v-card__subtitle
+    color: $material.text.secondary
+
 theme(v-card, "v-card")
 
 .v-card
-  display: block
   border-radius: $card-border-radius
   min-width: 0
+  overflow: hidden
+  padding: $card-padding
   position: relative
   text-decoration: none
   transition: $primary-transition
-  elevation(1)
-
-  > *:first-child:not(.v-btn):not(.v-chip)
-    border-top-left-radius: inherit
-    border-top-right-radius: inherit
-
-  > *:last-child:not(.v-btn):not(.v-chip)
-    border-bottom-left-radius: inherit
-    border-bottom-right-radius: inherit
-
-  &--raised
-    elevation(3)
-
-  &--tile
-    border-radius: 0
-
-  &--flat
-    elevation(0)
-
-  &--hover
-    cursor: pointer
-    transition: all .4s cubic-bezier(.25, .8, .25, 1)
-    transition-property: box-shadow
-
-    &:hover
-      elevation(8)
-
-  &__title
-    align-items: center
-    display: flex
-    flex-wrap: wrap
-    padding: 16px
-
-    &--primary
-      padding-top: 24px
-
-  &__text
-    padding: 16px
-    width: 100%
 
   &__actions
-    align-items: center
-    display: flex
-    padding: 8px
+    padding: $card-actions-padding
 
-    > *,
     .v-btn
-      margin: 0
+      padding: 0 8px
 
-    .v-btn + .v-btn
-      margin-left: 8px
+      + .v-btn
+        margin-left: 8px
+
+      &:first-child
+        margin-left: -8px
+
+  &__text
+    padding: $card-text-padding
+
+  &__title
+    display: flex
+    justify-content: space-between
+    padding: $card-title-padding
+
+  // > *:first-child:not(.v-btn):not(.v-chip)
+  //   border-top-left-radius: inherit
+  //   border-top-right-radius: inherit
+
+  // > *:last-child:not(.v-btn):not(.v-chip)
+  //   border-bottom-left-radius: inherit
+  //   border-bottom-right-radius: inherit
+
+  // &--raised
+  //   elevation(3)
+
+  // &--tile
+  //   border-radius: 0
+
+  // &--flat
+  //   elevation(0)
+
+  // &--hover
+  //   cursor: pointer
+  //   transition: all .4s cubic-bezier(.25, .8, .25, 1)
+  //   transition-property: box-shadow
+
+  //   &:hover
+  //     elevation(8)
+
+  // &__title
+  //   align-items: center
+  //   display: flex
+  //   flex-wrap: wrap
+  //   padding: 16px
+
+  //   &--primary
+  //     padding-top: 24px
+
+  // &__text
+  //   padding: 16px
+  //   width: 100%
+
+  // &__actions
+  //   align-items: center
+  //   display: flex
+  //   padding: 8px
+
+  //   > *,
+  //   .v-btn
+  //     margin: 0
+
+  //   .v-btn + .v-btn
+  //     margin-left: 8px

@@ -3,6 +3,7 @@ import '../../stylus/components/_cards.styl'
 
 // Mixins
 import Colorable from '../../mixins/colorable'
+import Elevatable from '../../mixins/elevatable'
 import Measurable from '../../mixins/measurable'
 import Routable from '../../mixins/routable'
 import Themeable from '../../mixins/themeable'
@@ -17,6 +18,7 @@ import { VNode } from 'vue'
 /* @vue/component */
 export default mixins(
   Colorable,
+  Elevatable,
   Measurable,
   Routable,
   Themeable
@@ -24,7 +26,12 @@ export default mixins(
   name: 'v-card',
 
   props: {
-    flat: Boolean,
+    elevation: {
+      type: [Number, String],
+      default: 2
+    },
+    /** @deprecated */
+    // flat: Boolean,
     hover: Boolean,
     img: String,
     raised: Boolean,
@@ -39,10 +46,10 @@ export default mixins(
     classes (): object {
       return {
         'v-card': true,
-        'v-card--flat': this.flat,
+        // 'v-card--flat': this.flat,
         'v-card--hover': this.hover,
-        'v-card--raised': this.raised,
         'v-card--tile': this.tile,
+        ...this.elevationClasses,
         ...this.themeClasses
       }
     },

@@ -2,25 +2,26 @@
 import '../../stylus/components/_buttons.styl'
 
 // Types
-import { VNode, VNodeChildren } from 'vue'
+import { VNode, VNodeChildren, VNodeData } from 'vue'
 import { PropValidator } from 'vue/types/options'
-import mixins from '../../util/mixins'
 
 // Components
 import VProgressCircular from '../VProgressCircular'
 
 // Mixins
 import Colorable from '../../mixins/colorable'
-import Positionable from '../../mixins/positionable'
 import Routable from '../../mixins/routable'
 import Themeable from '../../mixins/themeable'
 import { factory as ToggleableFactory } from '../../mixins/toggleable'
 import { inject as RegistrableInject } from '../../mixins/registrable'
 
+// Utilities
+import mixins from '../../util/mixins'
+import { deprecate } from '../../util/console'
+
 export default mixins(
   Colorable,
   Routable,
-  Positionable,
   Themeable,
   ToggleableFactory('inputValue'),
   RegistrableInject('buttonGroup')
@@ -33,24 +34,30 @@ export default mixins(
       type: String,
       default: 'v-btn--active'
     },
-    block: Boolean,
-    depressed: Boolean,
-    fab: Boolean,
+    /** @deprecated */
+    // block: Boolean,
+    // depressed: Boolean,
+    // fab: Boolean,
     flat: Boolean,
+    /** @deprecated */
     icon: Boolean,
-    large: Boolean,
+    // large: Boolean,
     loading: Boolean,
+    /** @deprecated */
     outline: Boolean,
+    outlined: Boolean,
     ripple: {
       type: [Boolean, Object],
       default: true
     },
     round: Boolean,
-    small: Boolean,
+    // small: Boolean,
     tag: {
       type: String,
       default: 'button'
     },
+    text: Boolean,
+    toggle: Boolean,
     type: {
       type: String,
       default: 'button'
@@ -62,31 +69,46 @@ export default mixins(
     classes (): any {
       return {
         'v-btn': true,
-        [this.activeClass]: this.isActive,
-        'v-btn--absolute': this.absolute,
-        'v-btn--block': this.block,
-        'v-btn--bottom': this.bottom,
-        'v-btn--disabled': this.disabled,
-        'v-btn--flat': this.flat,
-        'v-btn--floating': this.fab,
-        'v-btn--fixed': this.fixed,
-        'v-btn--icon': this.icon,
-        'v-btn--large': this.large,
-        'v-btn--left': this.left,
-        'v-btn--loader': this.loading,
-        'v-btn--outline': this.outline,
-        'v-btn--depressed': (this.depressed && !this.flat) || this.outline,
-        'v-btn--right': this.right,
+        'v-btn--contained': this.isContained,
+        'v-btn--outlined': this.outlined,
         'v-btn--round': this.round,
         'v-btn--router': this.to,
-        'v-btn--small': this.small,
-        'v-btn--top': this.top,
+        'v-btn--text': this.text,
+        'v-btn--toggle': this.toggle,
+        'elevation-0': this.flat,
         ...this.themeClasses
+        // [this.activeClass]: this.isActive,
+        // 'v-btn--absolute': this.absolute,
+        // 'v-btn--bottom': this.bottom,
+        // 'v-btn--disabled': this.disabled,
+        // 'v-btn--floating': this.fab,
+        // 'v-btn--fixed': this.fixed,
+        // 'v-btn--icon': this.icon,
+        // 'v-btn--large': this.large,
+        // 'v-btn--left': this.left,
+        // 'v-btn--loader': this.loading,
+        // 'v-btn--outline': this.outline,
+        // 'v-btn--depressed': (this.depressed && !this.flat) || this.outline,
+        // 'v-btn--right': this.right,
+        // 'v-btn--round': this.round,
+        // 'v-btn--small': this.small,
+        // 'v-btn--top': this.top,
       }
+    },
+    isContained (): boolean {
+      return !(this.text || this.outlined || this.toggle)
+    },
+    setColor (): Function {
+      return this.isContained
+        ? this.setBackgroundColor
+        : this.setTextColor
     }
   },
 
   mounted () {
+    if (this.outline) {
+      deprecate('outline', 'outlined', this)
+    }
     if (this.buttonGroup) {
       this.buttonGroup.register(this)
     }
@@ -100,20 +122,18 @@ export default mixins(
 
   methods: {
     // Prevent focus to match md spec
-    click (e: MouseEvent): void {
-      !this.fab &&
-      e.detail &&
-      this.$el.blur()
+    // click (e: MouseEvent): void {
+    //   !this.fab &&
+    //   e.detail &&
+    //   this.$el.blur()
 
-      this.$emit('click', e)
-    },
-    genContent (): VNode {
-      return this.$createElement(
-        'div',
-        { 'class': 'v-btn__content' },
-        [this.$slots.default]
-      )
-    },
+    //   this.$emit('click', e)
+    // },
+    // genContent (): VNode {
+    //   return this.$createElement('div', {
+    //     staticClass: 'v-btn__content'
+    //   }, [this.$slots.default])
+    // }
     genLoader (): VNode {
       const children: VNodeChildren = []
 
@@ -134,10 +154,8 @@ export default mixins(
   },
 
   render (h): VNode {
-    const setColor = (!this.outline && !this.flat) ? this.setBackgroundColor : this.setTextColor
     const { tag, data } = this.generateRouteLink(this.classes)
-    const children = [this.genContent()]
-
+    const children = this.$slots.default
     tag === 'button' && (data.attrs!.type = this.type)
     this.loading && children.push(this.genLoader())
 
@@ -145,6 +163,6 @@ export default mixins(
       ? this.value
       : JSON.stringify(this.value)
 
-    return h(tag, setColor(this.color, data), children)
+    return h(tag, this.setColor(this.color, data), children)
   }
 })

@@ -1,20 +1,29 @@
 import { createSimpleFunctional } from '../../util/helpers'
 import VCard from './VCard'
-import VCardMedia from './VCardMedia'
 import VCardTitle from './VCardTitle'
 import Vue from 'vue'
 
 const VCardActions = Vue.extend(createSimpleFunctional('v-card__actions'))
 const VCardText = Vue.extend(createSimpleFunctional('v-card__text'))
+const VCardHeader = Vue.extend(createSimpleFunctional('v-card__header'))
+const VCardSubtitle = Vue.extend(createSimpleFunctional('v-card__subtitle'))
 
-export { VCard, VCardMedia, VCardTitle, VCardActions, VCardText }
+export {
+  VCard,
+  VCardActions,
+  VCardText,
+  VCardHeader,
+  VCardSubtitle,
+  VCardTitle
+}
 
 export default {
   $_vuetify_subcomponents: {
     VCard,
-    VCardMedia,
-    VCardTitle,
     VCardActions,
-    VCardText
+    VCardText,
+    VCardHeader,
+    VCardSubtitle,
+    VCardTitle
   }
 }
